@@ -22,17 +22,15 @@ npm run preview
 .
 ├── index.html
 ├── src/
-│   ├── api/                 # Local persistence adapter for the exported Base44 flows
+│   ├── api/                 # Local persistence and submission adapter
 │   ├── components/          # Shared UI primitives and admin components
 │   ├── lib/                # Site content and formatting helpers
 │   ├── pages/               # Customiser, booking, and owner dashboard screens
 │   ├── App.jsx
 │   ├── index.css
 │   └── main.jsx
-├── base44/                  # Preserved entity schemas and server function export
-├── docs/source-export.md    # Original source export from the repository
 ├── package.json
 └── vite.config.js
 ```
 
-The browser build uses local storage through `src/api/base44Client.js`, so the UI works without a backend during development. The preserved `base44/` files document the original entity and server-function contracts and can be connected to a hosted data service later.
+The browser build uses local storage through `src/api/store.js`, so the UI works without a backend during development. The adapter exposes neutral entity, upload, and submission methods that can be replaced with a hosted API without changing the page components.

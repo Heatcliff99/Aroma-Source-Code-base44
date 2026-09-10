@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Upload, Check, Lock, Leaf } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { Image } from "@/components/ui/image";
-import { base44 } from "@/api/base44Client";
+import { store } from "@/api/store";
 import {
   OCCASIONS,
   FLOWER_COLOURS,
@@ -77,7 +77,7 @@ export default function Customise() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.InventoryItem.list("-created_date", 500)
+    store.entities.InventoryItem.list("-created_date", 500)
       .then((recs) => setCatalog(buildCatalog(recs)))
       .catch(() => setCatalog([]))
       .finally(() => setLoading(false));
@@ -163,8 +163,8 @@ export default function Customise() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setInspirationUrl(file_url);
+      const { fileUrl } = await store.upload(file);
+      setInspirationUrl(fileUrl);
     } catch (_e) {}
   }
 
@@ -512,17 +512,14 @@ function BookingModal({ vase, total, occasion, productType, tier, vision, inspir
     setLoading(true);
     setErr("");
     try {
-      await base44.functions.invoke("submitLead", {
-        type: "custom_bouquet",
-        data: {
-          ...form,
-          whatsapp_number: form.whatsapp_number || form.phone,
-          occasion,
-          items: vase.map((v) => ({ name: v.name, colour: v.colour || "", price: v.price })),
-          estimated_total: total,
-          vision,
-          inspiration_url: inspirationUrl,
-        },
+      await store.submit("custom_bouquet", {
+        ...form,
+        whatsapp_number: form.whatsapp_number || form.phone,
+        occasion,
+        items: vase.map((v) => ({ name: v.name, colour: v.colour || "", price: v.price })),
+        estimated_total: total,
+        vision,
+        inspiration_url: inspirationUrl,
       });
       setSubmitted(true);
     } catch (error) {

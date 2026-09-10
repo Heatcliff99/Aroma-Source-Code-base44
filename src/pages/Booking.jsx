@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, Calendar, Clock, MapPin, Truck, Store } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import { base44 } from "@/api/base44Client";
+import { store } from "@/api/store";
 import { SHOPS, FLOWER_COLOURS } from "@/lib/siteData";
 
 const SLOTS = [
@@ -35,7 +35,7 @@ export default function Booking() {
     if (form.fulfillment_type === "delivery" && !form.delivery_location) { setErr("Please share your delivery location (Google Maps link or address)."); return; }
     setLoading(true); setErr("");
     try {
-      await base44.functions.invoke("submitLead", { type: "booking", data: form });
+      await store.submit("booking", form);
       setDone(true);
     } catch (error) { setErr(error.message || "Something went wrong."); }
     finally { setLoading(false); }

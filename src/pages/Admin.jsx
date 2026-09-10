@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Check, X, Mail, Calendar, Sparkles, Star, Users, Layers } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { store } from "@/api/store";
 import { formatINR } from "@/lib/siteData";
 import InventoryManager from "@/components/admin/InventoryManager";
 
@@ -23,12 +23,12 @@ export default function Admin() {
     setLoading(true);
     try {
       const [enq, bk, cb, fb, users, inv] = await Promise.all([
-        base44.entities.Enquiry.list("-created_date", 100),
-        base44.entities.Booking.list("-created_date", 100),
-        base44.entities.CustomBouquet.list("-created_date", 100),
-        base44.entities.Feedback.list("-created_date", 100),
-        base44.entities.User.list("-created_date", 100).catch(() => []),
-        base44.entities.InventoryItem.list("-created_date", 500).catch(() => []),
+        store.entities.Enquiry.list("-created_date", 100),
+        store.entities.Booking.list("-created_date", 100),
+        store.entities.CustomBouquet.list("-created_date", 100),
+        store.entities.Feedback.list("-created_date", 100),
+        store.entities.User.list("-created_date", 100).catch(() => []),
+        store.entities.InventoryItem.list("-created_date", 500).catch(() => []),
       ]);
       setData({ enquiries: enq, bookings: bk, bouquets: cb, feedback: fb, customers: users, inventory: inv });
     } catch (_e) {}
@@ -36,7 +36,7 @@ export default function Admin() {
   }, []);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    store.auth.me().then(setUser).catch(() => {});
     load();
   }, [load]);
 
@@ -56,7 +56,7 @@ export default function Admin() {
   const records = data[tab] || [];
 
   async function update(entity, id, patch) {
-    await base44.entities[entity].update(id, patch);
+    await store.entities[entity].update(id, patch);
     load();
   }
 

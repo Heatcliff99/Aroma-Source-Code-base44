@@ -40,25 +40,19 @@ const entityApi = (entity) => ({
   },
 });
 
-export const base44 = {
+export const store = {
   entities: new Proxy({}, { get: (_, entity) => entityApi(entity) }),
   auth: {
     async me() {
       return { id: "local-owner", role: "admin", full_name: "Shop owner", email: "owner@aromaflowers.local" };
     },
   },
-  integrations: {
-    Core: {
-      async UploadFile({ file }) {
-        return { file_url: URL.createObjectURL(file) };
-      },
-    },
+  async upload(file) {
+    return { fileUrl: URL.createObjectURL(file) };
   },
-  functions: {
-    async invoke(_name, { type, data }) {
-      const entity = { booking: "Booking", enquiry: "Enquiry", custom_bouquet: "CustomBouquet", feedback: "Feedback" }[type];
-      if (!entity) throw new Error("Unsupported submission type");
-      return entityApi(entity).create(data);
-    },
+  async submit(type, data) {
+    const entity = { booking: "Booking", enquiry: "Enquiry", custom_bouquet: "CustomBouquet", feedback: "Feedback" }[type];
+    if (!entity) throw new Error("Unsupported submission type");
+    return entityApi(entity).create(data);
   },
 };

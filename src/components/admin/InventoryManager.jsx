@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Layers, Plus, X, Check } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { store } from "@/api/store";
 import { formatINR } from "@/lib/siteData";
 
 const CATS = ["primary_bloom", "filler", "foliage", "wrapping", "ribbon", "addon"];
@@ -23,7 +23,7 @@ export default function InventoryManager() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const all = await base44.entities.InventoryItem.list("-created_date", 500);
+      const all = await store.entities.InventoryItem.list("-created_date", 500);
       setItems(all.filter((i) => i.shop_location === shop));
     } catch (_e) {}
     finally { setLoading(false); }
@@ -32,14 +32,14 @@ export default function InventoryManager() {
   useEffect(() => { load(); }, [load]);
 
   async function update(id, patch) {
-    await base44.entities.InventoryItem.update(id, patch);
+    await store.entities.InventoryItem.update(id, patch);
     setItems((arr) => arr.map((i) => (i.id === id ? { ...i, ...patch } : i)));
   }
 
   async function addNew(e) {
     e.preventDefault();
     if (!newItem.name) return;
-    await base44.entities.InventoryItem.create({
+    await store.entities.InventoryItem.create({
       name: newItem.name,
       category: newItem.category,
       price: Number(newItem.price),
