@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, Phone, ShoppingBag, Sparkles, X } from "lucide-react";
+import { Analytics } from "@vercel/analytics/react";
 import Admin from "@/pages/Admin";
 import Booking from "@/pages/Booking";
 import Customise from "@/pages/Customise";
@@ -31,6 +32,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Analytics />
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <div className="flex h-16 items-center justify-between lg:h-20">
