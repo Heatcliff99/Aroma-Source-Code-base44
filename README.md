@@ -16,6 +16,10 @@ npm run build
 npm run preview
 ```
 
+## Deploy to Vercel
+
+Import `https://github.com/Heatcliff99/Aroma-Source-Code` into Vercel. The repository includes `vercel.json`, so Vercel will install with `npm ci`, run `npm run build`, and serve the generated `dist/` directory.
+
 ## Project structure
 
 ```text
